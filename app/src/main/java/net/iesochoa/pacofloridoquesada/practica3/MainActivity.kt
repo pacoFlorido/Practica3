@@ -3,23 +3,33 @@ package net.iesochoa.pacofloridoquesada.practica3
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import net.iesochoa.pacofloridoquesada.practica3.databinding.ActivityMainBinding
 
 private const val TAG = "practica3"
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    var num:Int = 0;
+    val model:MainActivityViewModel by viewModels()
+    //var num:Int = 0;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_main)
+        // setContentView(R.layout.activity_main)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.tvNumero.text = num.toString()
+        // Iniciamos el contador. Si es la primera vez, a cero, si es un reconstrucción
+        // la hará al valor que tenía
+        //binding.tvNumero.text = model.contador.toString()
+        model.getContador().observe(this, Observer<Int> {
+            cont->binding.tvNumero.text = cont.toString()
+        })
         binding.btSumaUno.setOnClickListener{
-            num++
-            binding.tvNumero.text = num.toString()
+            // Sumamos 1
+            model.sumaUno()
+            // Mostramos el valor
+            //binding.tvNumero.text = model.contador.toString()
         }
 
         Log.i(TAG,"onCreate")
