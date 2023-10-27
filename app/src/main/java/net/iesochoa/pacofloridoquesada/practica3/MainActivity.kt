@@ -9,7 +9,18 @@ import net.iesochoa.pacofloridoquesada.practica3.databinding.ActivityMainBinding
 
 private const val TAG = "practica3"
 class MainActivity : AppCompatActivity() {
+    /**
+     * Nueva forma de inflar los objetos con Binding.
+     * Para esto hay que añadir lo siguiente al archivo <<build.gradle.kts>>
+     *     buildFeatures{
+     *         viewBinding = true
+     *     }
+     */
     private lateinit var binding: ActivityMainBinding
+
+    /**
+     * Asignamos el ViewModel a la Activity
+     */
     val model:MainActivityViewModel by viewModels()
     //var num:Int = 0;
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,18 +33,34 @@ class MainActivity : AppCompatActivity() {
         // Iniciamos el contador. Si es la primera vez, a cero, si es un reconstrucción
         // la hará al valor que tenía
         //binding.tvNumero.text = model.contador.toString()
+        /**
+         * Obtenemos los datos del ViewModel
+         */
         model.getContador().observe(this, Observer<Int> {
             cont->binding.tvNumero.text = cont.toString()
         })
+        model.getAsteriscos().observe(this,Observer<String>{
+            aste->binding.tvAsteriscos.text = aste.toString()
+        })
+
+        /**
+         * Asignamos la acción del botón, que en este caso será sumar uno al contador y al número de
+         * asteriscos
+         */
         binding.btSumaUno.setOnClickListener{
             // Sumamos 1
             model.sumaUno()
+            model.sumaAsterisco()
             // Mostramos el valor
             //binding.tvNumero.text = model.contador.toString()
         }
 
         Log.i(TAG,"onCreate")
     }
+
+    /**
+     * Métodos sobreescritos para observar el ciclo de vida de la App
+     */
     override fun onStart() {
         super.onStart()
         Log.i(TAG, "onStart")
